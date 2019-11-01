@@ -5,6 +5,7 @@ import Show from "components/Appointment/Show";
 import Empty from "components/Appointment/Empty";
 import Form from "components/Appointment/Form";
 import Status from "components/Appointment/Status";
+import Confirm from "components/Appointment/Confirm";
 
 import "components/Appointment/styles.scss";
 import useVisualMode from "hooks/useVisualMode";
@@ -44,9 +45,8 @@ export default function Appointment(props) {
         <Show
           student={props.interview.student}
           interviewer={props.interview.interviewer.name}
-          onDelete={(id, interview) => {
-            transition(DELETE);
-            cancel(props.id, interview);
+          onDelete={() => {
+            transition(CONFIRM);
           }}
         />
       )}
@@ -62,9 +62,15 @@ export default function Appointment(props) {
       )}
       {mode === SAVING && <Status message="Saving" />}
       {mode === DELETE && <Status message="Deleting" />}
-
-      {/* {mode === CONFIRM && <Confirm onCancel={() => back()} onConfirm={() => {
-      }}/> */}
+      {mode === CONFIRM && (
+        <Confirm
+          onCancel={() => back()}
+          onConfirm={(id, interview) => {
+            transition(DELETE);
+            cancel(props.id, interview);
+          }}
+        />
+      )}
     </article>
   );
 }
