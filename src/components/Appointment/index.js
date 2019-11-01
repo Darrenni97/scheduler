@@ -13,6 +13,8 @@ const EMPTY = "EMPTY";
 const SHOW = "SHOW";
 const CREATE = "CREATE";
 const SAVING = "SAVING";
+const DELETE = "DELETE";
+const CONFIRM = "CONFIRM";
 
 export default function Appointment(props) {
   const newMode = props.interview ? SHOW : EMPTY;
@@ -27,6 +29,13 @@ export default function Appointment(props) {
       transition(SHOW);
     });
   }
+
+  function cancel(id, interview) {
+    props.cancelInterview(id, interview).then(() => {
+      transition(EMPTY);
+    });
+  }
+
   return (
     <article className="appointment">
       <Header time={props.time}></Header>
@@ -35,6 +44,10 @@ export default function Appointment(props) {
         <Show
           student={props.interview.student}
           interviewer={props.interview.interviewer.name}
+          onDelete={(id, interview) => {
+            transition(DELETE);
+            cancel(props.id, interview);
+          }}
         />
       )}
       {mode === CREATE && (
@@ -48,6 +61,10 @@ export default function Appointment(props) {
         />
       )}
       {mode === SAVING && <Status message="Saving" />}
+      {mode === DELETE && <Status message="Deleting" />}
+
+      {/* {mode === CONFIRM && <Confirm onCancel={() => back()} onConfirm={() => {
+      }}/> */}
     </article>
   );
 }
