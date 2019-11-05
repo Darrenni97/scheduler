@@ -27,15 +27,17 @@ function reducer(state, action) {
         [action.id]: appointment
       };
 
-      for (const day of { ...state }.days) {
+      const days = state.days.map(day => {
         if (day.name === state.day) {
-          day.spots += action.spot;
+          return {
+            ...day,
+            spots: day.spots + action.spot
+          };
         }
-      }
-      return {
-        ...state,
-        appointments
-      };
+        return day;
+      });
+
+      return { ...state, days, appointments };
     }
     default:
       throw new Error(
